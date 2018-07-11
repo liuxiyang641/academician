@@ -66,7 +66,8 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    # 'academician.pipelines.AcademicianPipeline': 300
-    'academician.pipelines.MysqlPipeline':300,
+    'academician.pipelines.DuplicatePipeline':300,
+    'academician.pipelines.MysqlPipeline':301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

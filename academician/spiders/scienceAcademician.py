@@ -17,21 +17,13 @@ class ScienceacademicianSpider(scrapy.Spider):
             academicians = academician_line.css('span')
             for academician in academicians:
                 item = AcademicianItem()
-                item['name'] = academician.css('a::text').extract()[0]
+                name = academician.css('a::text').extract()[0]
+                item['name'] = re.findall('[\u4e00-\u9fa5]{2,4}',name)[0]
                 item['link'] = academician.css('a::attr(href)').extract_first()
                 yield scrapy.Request(url=item['link'],callback=self.more_parse,dont_filter=True,meta={'item':item})
 
     def more_parse(self,response):
         item = response.meta['item']
-        # if(response.xpath('//p')):
-        #     if(response.xpath('//p[1]/text()')):
-        #         introduce = response.xpath('//p[1]/text()').extract_first()
-        #     elif(response.xpath('//p[1]/span/text()')):
-        #         introduce = response.xpath('//p[1]/span/text()').extract_first()
-        #     else:
-        #         introduce = response.xpath('//p[1]/font/text()').extract_first()
-        # else:
-        #     introduce = response.xpath('//*[@id="zoom"]/text()').extract_first()
         introduce_select = response.xpath('//*[@id="zoom"]//text()')
         introduce = ''
         introduces = [intro.extract() for intro in introduce_select]
@@ -40,15 +32,11 @@ class ScienceacademicianSpider(scrapy.Spider):
 
         item['introduce'] = introduce.strip()
 
-        # if(re.findall('.*?[家学]', introduce)):
-        #     item['dicipline'] = re.findall('.*?[家学]', introduce)[0].strip()
-        # else:
-        #     item['dicipline'] = '未知'
 
         if(re.findall('\d{4}(?=年当选)',introduce)):
             item['evaluate_time'] = re.findall('\d{4}(?=年当选)',introduce)[0].strip()
         else:
-            item['evaluate_time'] = '未知'
+            item['evaluate_time'] = 1901
 
         yield item
 
