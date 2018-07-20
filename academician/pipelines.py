@@ -12,13 +12,15 @@
 
 
 from scrapy.exceptions import DropItem
-
+from academician.items import AcademicianItem, EngineerItem
+import csv
 
 class DuplicatePipeline(object):
     """
     去除重复item
     请对spider.name进行判断
     """
+
     def __init__(self):
         self.ids_seen = set()
 
@@ -33,39 +35,71 @@ class DuplicatePipeline(object):
             return item
 
 
-import pymysql
+class CsvExporterPipeline(object):
+    """
+    导出到csv
+    """
 
-class MysqlPipeline():
+    def open_spider(self, spider):
+        if spider.name == "engineer":   # 工程院院士
+            self.file = open('../docs/AcademicianEngineering.csv', 'w', encoding='utf-8-sig')
+            header = []
+            for key in EngineerItem.fields:
+                header.append(key)
+        elif spider.name == "scienceAcademician":   # 科学院院士
+            self.file = open('../docs/AcademicianScience.csv', 'w', encoding='utf-8-sig')
+            header = []
+            for key in AcademicianItem.fields:
+                header.append(key)
 
-    def __init__(self,host,database,user,password,port):
-        self.host = host
-        self.database = database
-        self.user = user
-        self.password = password
-        self.port = port
+        self.writer = csv.DictWriter(self.file, fieldnames=header)
+        self.writer.writeheader()
 
-    @classmethod
-    def from_crawler(cls,crawler):
-        return cls(
-            host=crawler.settings.get('MYSQL_HOST'),
-            database=crawler.settings.get('MYSQL_DATABASE'),
-            user=crawler.settings.get('MYSQL_USER'),
-            password=crawler.settings.get('MYSQL_PASSWORD'),
-            port=crawler.settings.get('MYSQL_PORT')
-        )
+    def close_spider(self, spider):
+        self.file.close()
 
-    def open_spider(self,spider):
-        self.db = pymysql.connect(self.host,self.user,self.password,self.database,charset='utf8',port=self.port)
-        self.cursor = self.db.cursor()
-
-    def close_spider(self,spider):
-        self.db.close()
-
-    def process_item(self,item,spider):
-        data = dict(item)
-        keys = ', '.join(data.keys())
-        values = ', '.join(['%s']*len(data))
-        sql = 'INSERT INTO %s(%s) VALUES(%s)'%(item.table,keys,values)
-        self.cursor.execute(sql,tuple(data.values()))
-        self.db.commit()
+    def process_item(self, item, spider):
+        self.writer.writerow(item)
+        self.file.flush()
         return item
+
+
+
+
+
+# import pymysql
+
+# class MysqlPipeline():
+#
+#     def __init__(self,host,database,user,password,port):
+#         self.host = host
+#         self.database = database
+#         self.user = user
+#         self.password = password
+#         self.port = port
+#
+#     @classmethod
+#     def from_crawler(cls,crawler):
+#         return cls(
+#             host=crawler.settings.get('MYSQL_HOST'),
+#             database=crawler.settings.get('MYSQL_DATABASE'),
+#             user=crawler.settings.get('MYSQL_USER'),
+#             password=crawler.settings.get('MYSQL_PASSWORD'),
+#             port=crawler.settings.get('MYSQL_PORT')
+#         )
+#
+#     def open_spider(self,spider):
+#         self.db = pymysql.connect(self.host,self.user,self.password,self.database,charset='utf8',port=self.port)
+#         self.cursor = self.db.cursor()
+#
+#     def close_spider(self,spider):
+#         self.db.close()
+#
+#     def process_item(self,item,spider):
+#         data = dict(item)
+#         keys = ', '.join(data.keys())
+#         values = ', '.join(['%s']*len(data))
+#         sql = 'INSERT INTO %s(%s) VALUES(%s)'%(item.table,keys,values)
+#         self.cursor.execute(sql,tuple(data.values()))
+#         self.db.commit()
+#         return item

@@ -10,16 +10,16 @@ import scrapy
 
 class AcademicianItem(scrapy.Item):
     # define the fields for your item here like:
-    table='academician' # 导入的数据库表名
-    name = scrapy.Field() # 中科院院士姓名
-    link = scrapy.Field() # 院士在官网链接
-    introduce = scrapy.Field() # 院士简介
-    evaluate_time = scrapy.Field() # 当选时间
+    table = 'academician'  # 导入的数据库表名
+    name = scrapy.Field()  # 中科院院士姓名
+    link = scrapy.Field()  # 院士在官网链接
+    introduce = scrapy.Field()  # 院士简介
+    evaluate_time = scrapy.Field()  # 当选时间
 
 
 class EngineerItem(scrapy.Item):
-    table = 'engineer' # 导入的数据库表名
-    name = scrapy.Field() # 中国工程院院士
-    link = scrapy.Field() # 院士在官网链接
-    introduce = scrapy.Field() # 院士简介
-    evaluate_time = scrapy.Field() # 当选时间
+    table = 'engineer'  # 导入的数据库表名
+    name = scrapy.Field()  # 中国工程院院士
+    link = scrapy.Field()  # 院士在官网链接
+    introduce = scrapy.Field()  # 院士简介
+    evaluate_time = scrapy.Field()  # 当选时间
