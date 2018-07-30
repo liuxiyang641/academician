@@ -13,13 +13,22 @@ class EngineerSpider(scrapy.Spider):
 
     def parse(self, response):
         base_url = 'http://www.cae.cn'
-        engineers = response.css('li[class="name_list"]')
-        for engineer in engineers:
-            item = EngineerItem()
-            name = engineer.css('a::text').extract_first()
-            item['name'] = re.findall('[\u4e00-\u9fa5]{2,4}', name)[0]
-            item['link'] = base_url + engineer.css('a::attr(href)').extract_first()
-            yield scrapy.Request(url=item['link'], callback=self.more_parse, dont_filter=True, meta={'item': item})
+        # 所有学部
+        bts = response.css('.ysmd_bt::text')
+        nums_of_bts = len(bts)
+        index = 0
+        while index < nums_of_bts:
+            name_list = response.xpath(
+                '//div[@class="ysxx_namelist clearfix" and count(preceding-sibling::div[@class="ysmd_bt clearfix"])=' + str(index + 1) + ']')
+            engineers = name_list.css('li[class="name_list"]')
+            for engineer in engineers:
+                item = EngineerItem()
+                name = engineer.css('a::text').extract_first()
+                item['department'] = re.findall('.*、(.*)\((.*)', bts[index].extract())[0][0]
+                item['name'] = re.findall('[\u4e00-\u9fa5]{2,4}', name)[0]
+                item['link'] = base_url + engineer.css('a::attr(href)').extract_first()
+                yield scrapy.Request(url=item['link'], callback=self.more_parse, dont_filter=True, meta={'item': item})
+            index += 1
 
     def more_parse(self, response):
         item = response.meta['item']

@@ -46,7 +46,7 @@ class CsvExporterPipeline(object):
             header = []
             for key in EngineerItem.fields:
                 header.append(key)
-        elif spider.name == "scienceAcademician":   # 科学院院士
+        else:   # 科学院院士
             self.file = open('../docs/AcademicianScience.csv', 'w', encoding='utf-8-sig')
             header = []
             for key in AcademicianItem.fields:
