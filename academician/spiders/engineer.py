@@ -24,7 +24,7 @@ class EngineerSpider(scrapy.Spider):
             for engineer in engineers:
                 item = EngineerItem()
                 name = engineer.css('a::text').extract_first()
-                item['department'] = re.findall('.*、(.*)\((.*)', bts[index].extract())[0][0]
+                item['XB'] = re.findall('.*、(.*)\((.*)', bts[index].extract())[0][0]
                 item['name'] = re.findall('[\u4e00-\u9fa5]{2,4}', name)[0]
                 item['link'] = base_url + engineer.css('a::attr(href)').extract_first()
                 yield scrapy.Request(url=item['link'], callback=self.more_parse, dont_filter=True, meta={'item': item})

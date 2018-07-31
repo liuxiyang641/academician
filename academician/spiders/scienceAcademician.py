@@ -24,7 +24,7 @@ class ScienceacademicianSpider(scrapy.Spider):
                 for academician in academicians:
                     item = AcademicianItem()
                     name = academician.css('a::text').extract()[0]
-                    item['department'] = dts[index].extract()
+                    item['XB'] = dts[index].extract()
                     item['name'] = re.findall('[\u4e00-\u9fa5]{2,4}', name)[0]
                     item['link'] = academician.css('a::attr(href)').extract_first()
                     yield scrapy.Request(url=item['link'], callback=self.more_parse, dont_filter=True,
