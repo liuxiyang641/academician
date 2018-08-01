@@ -5,7 +5,7 @@
 from scrapy import cmdline
 
 # name = 'engineer'
-name='scienceAcademician'
+name = 'scienceAcademician'
 cmd = 'scrapy crawl {0}'.format(name)
 
 cmdline.execute(cmd.split())

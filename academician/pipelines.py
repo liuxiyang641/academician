@@ -15,6 +15,7 @@ from scrapy.exceptions import DropItem
 from academician.items import AcademicianItem, EngineerItem
 import csv
 
+
 class DuplicatePipeline(object):
     """
     去除重复item
@@ -41,13 +42,13 @@ class CsvExporterPipeline(object):
     """
 
     def open_spider(self, spider):
-        if spider.name == "engineer":   # 工程院院士
-            self.file = open('../docs/AcademicianEngineering.csv', 'w', encoding='utf-8-sig')
+        if spider.name == "engineer":  # 工程院院士
+            self.file = open('../docs/AcademicianEngineering.csv', 'w', encoding='utf-8')
             header = []
             for key in EngineerItem.fields:
                 header.append(key)
-        else:   # 科学院院士
-            self.file = open('../docs/AcademicianScience.csv', 'w', encoding='utf-8-sig')
+        else:  # 科学院院士
+            self.file = open('../docs/AcademicianScience.csv', 'w', encoding='utf-8')
             header = []
             for key in AcademicianItem.fields:
                 header.append(key)
@@ -62,10 +63,6 @@ class CsvExporterPipeline(object):
         self.writer.writerow(item)
         self.file.flush()
         return item
-
-
-
-
 
 # import pymysql
 

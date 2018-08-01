@@ -19,7 +19,8 @@ class EngineerSpider(scrapy.Spider):
         index = 0
         while index < nums_of_bts:
             name_list = response.xpath(
-                '//div[@class="ysxx_namelist clearfix" and count(preceding-sibling::div[@class="ysmd_bt clearfix"])=' + str(index + 1) + ']')
+                '//div[@class="ysxx_namelist clearfix" and count(preceding-sibling::div[@class="ysmd_bt clearfix"])=' + str(
+                    index + 1) + ']')
             engineers = name_list.css('li[class="name_list"]')
             for engineer in engineers:
                 item = EngineerItem()
